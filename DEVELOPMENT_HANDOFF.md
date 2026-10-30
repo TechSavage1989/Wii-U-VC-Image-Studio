@@ -69,7 +69,8 @@ current launch/build guide. Current architecture notes use the new build paths.
 Stable filename: Wii_U_VC_Image_Studio.exe. Preserve renamed running EXEs in-place.
 Feed: https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases/latest/download/update-manifest.json.
 Repository/feed are public, no token embedded. Publish unique vVERSION tags only
-after main CI. Creating release/VERSION is also an explicit publication trigger.
+after main CI. Pushing a source/workflow commit to release/VERSION is the explicit
+publication trigger. API branch creation alone may not emit the required push.
 Release CI verifies ref/version/digests and refuses existing release names.
 No application-wide license chosen. Builds are unsigned. Keep upstream notices.
 v5.05 requires manual migration and explicit shortcut repointing. Restart closes

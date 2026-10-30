@@ -1,6 +1,7 @@
 """Verify the real stable feed/download after publication, without installing.
 
 The installed-version value is a test fixture, not a historical app upgrade.
+This publication check never replaces or restarts an installed application.
 """
 import json
 from pathlib import Path

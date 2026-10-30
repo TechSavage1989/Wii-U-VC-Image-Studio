@@ -346,7 +346,18 @@ def cleanup_session(session, root=None):
         raise ValueError("Refusing cleanup outside an owned update session")
     if json.loads((session / "owner.json").read_text()) != {"app_id": APP_ID}:
         raise ValueError("Update session ownership is missing")
-    shutil.rmtree(session)
+    # Ownership is checked once before deletion. Windows may briefly retain an
+    # EXE handle even after the helper exits; retry the same validated directory.
+    deadline = time.monotonic() + 20
+    while session.exists():
+        if session.is_symlink():
+            raise ValueError("Update session changed during cleanup")
+        try:
+            shutil.rmtree(session)
+        except PermissionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(.25)
 
 
 def wait_pid(pid, timeout):
@@ -416,7 +427,8 @@ def apply_update(plan_path):
                     raise
                 time.sleep(0.25)
         replaced = True
-        atomic_json(session / "helper.json", {"pid": os.getpid()})
+        atomic_json(session / "helper.json", {"pid": os.getpid(),
+                    "bootloader_pid": os.getppid() if getattr(sys, "frozen", False) else None})
         child = subprocess.Popen([str(target), "--studio-update-health", str(session), plan["token"]], cwd=str(target.parent),
                                  env={**os.environ, "PYINSTALLER_RESET_ENVIRONMENT": "1"})
         deadline = time.monotonic() + 90
@@ -461,10 +473,16 @@ def acknowledge_health(session, token, version):
 
     def after_helper():
         try:
-            pid = json.loads((session / "helper.json").read_text())["pid"]
-            if wait_pid(pid, 120) and (session / "finished.json").is_file():
+            helper = json.loads((session / "helper.json").read_text())
+            exited = wait_pid(helper["pid"], 120)
+            if exited and helper.get("bootloader_pid"):
+                exited = wait_pid(helper["bootloader_pid"], 30)
+            if exited and (session / "finished.json").is_file():
                 cleanup_session(session)
-        except (OSError, ValueError, KeyError):
-            pass  # Keep diagnostic evidence, never broaden cleanup.
+        except (OSError, ValueError, KeyError) as exc:
+            try:
+                atomic_json(storage_root() / "cleanup-error.json", {"error": str(exc), "session": str(session)})
+            except OSError:
+                pass  # Keep diagnostic evidence, never broaden cleanup.
     threading.Thread(target=after_helper, daemon=True, name="studio-update-cleanup").start()
     return True

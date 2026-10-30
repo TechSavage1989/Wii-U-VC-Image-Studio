@@ -18,7 +18,7 @@ import psutil
 from vc_extractor.updater import APP_ID, EXE, atomic_json, digest, validate_archive
 
 
-def scenario(base, fail_health=False):
+def scenario(base, target_base, fail_health=False):
     workspace = base / ("rollback" if fail_health else "healthy")
     workspace.mkdir()
     local = workspace / "local"
@@ -35,7 +35,9 @@ def scenario(base, fail_health=False):
     manifest = json.loads((ROOT / "artifacts/update-manifest.json").read_text())
     archive = next((ROOT / "artifacts").glob("*_Portable.zip"))
     payload = validate_archive(archive, manifest, session / "payload")
-    target = workspace / "My custom studio name.exe"
+    installation = target_base / workspace.name
+    installation.mkdir()
+    target = installation / "My custom studio name.exe"
     shutil.copy2(payload, target)
     # Different old hash with an intact unsigned PE, mimicking an existing build.
     with target.open("ab") as handle:
@@ -76,21 +78,28 @@ def scenario(base, fail_health=False):
         assert settings.read_bytes() == before
         backups = list((update_root / "rollback").rglob("*.exe"))
         assert len(backups) == 1 and digest(backups[0]) == old_hash
-        assert not list(workspace.glob(".studio-update-*"))
+        assert not list(installation.glob(".studio-update-*"))
         if fail_health:
             assert result["status"] == "rolled-back", result
             assert digest(target) == old_hash
         else:
             assert result["status"] == "success", result
             assert digest(target) == manifest["exe_sha256"]
-            for _ in range(40):
+            for _ in range(120):
                 if not session.exists():
                     break
                 time.sleep(.25)
             assert not session.exists(), "Healthy app did not clean staging after helper exit"
         print(json.dumps({"scenario":"failed-health" if fail_health else "healthy", "result":result,
-                          "custom_filename":True, "settings_preserved":True, "one_backup":True}))
+                          "custom_filename":True, "settings_preserved":True, "one_backup":True,
+                          "cross_volume":target.drive.casefold() != session.drive.casefold()}))
     finally:
+        for process in list(observed.values()):
+            try:
+                for child in process.children(recursive=True):
+                    observed[child.pid] = child
+            except psutil.Error:
+                pass
         for process in reversed(list(observed.values())):
             try:
                 process.kill()
@@ -98,10 +107,12 @@ def scenario(base, fail_health=False):
                 pass
         if running.poll() is None:
             subprocess.run(["taskkill", "/PID", str(running.pid), "/T", "/F"], capture_output=True)
+        psutil.wait_procs(list(observed.values()), timeout=10)
         parent.wait(timeout=5)
 
 
 if __name__ == "__main__":
-    with tempfile.TemporaryDirectory(prefix="studio-native-update-") as directory:
-        scenario(Path(directory))
-        scenario(Path(directory), True)
+    with tempfile.TemporaryDirectory(prefix="studio-native-update-") as directory, \
+         tempfile.TemporaryDirectory(prefix="studio-install-", dir=ROOT / "artifacts") as targets:
+        scenario(Path(directory), Path(targets))
+        scenario(Path(directory), Path(targets), True)

@@ -3,3 +3,4 @@ pyinstaller==6.16.0
 playwright==1.55.0
 tinycss2==1.4.0
 psutil==7.1.0
+websockets==15.0.1

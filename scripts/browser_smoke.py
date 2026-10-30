@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import subprocess
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,25 +54,10 @@ def main():
         page.get_by_role("button", name="Updates", exact=True).click()
         assert "Offline" in page.locator("#updateBanner").inner_text()
         context.set_offline(False)
-        if args.timers:
-            started = time.monotonic()
-            while time.monotonic() - started < 125:
-                page.wait_for_timeout(1000)
-            other = context.new_page()
-            other.goto("about:blank")
-            other.bring_to_front()
-            page.wait_for_timeout(500)
-            page.bring_to_front()
-            page.wait_for_timeout(500)
-            events = page.evaluate("checkEvents")
-            assert any(e["reason"] == "focus" and e["time"] - events[0]["time"] >= 120000 for e in events), events
-            while time.monotonic() - started < 305:
-                page.wait_for_timeout(1000)
-            events = page.evaluate("checkEvents")
-            assert any(e["reason"] == "interval" for e in events), events
-            print(json.dumps({"production_timer_events":events}))
         assert not errors, errors
         browser.close()
+    if args.timers:
+        subprocess.run([sys.executable, str(ROOT / "scripts/chromium_timers.py")], check=True)
     print("Browser layout, update banner and offline checks passed" + ("; real 2/5-minute timers passed" if args.timers else ""))
 
 

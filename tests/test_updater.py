@@ -192,3 +192,21 @@ def test_cleanup_cannot_remove_unowned_or_other_directories(tmp_path):
 def test_existing_settings_location_is_preserved():
     from vc_extractor.config import default_config_dir
     assert "wii_u_vc_image_builder" in str(default_config_dir()).lower()
+
+
+def test_cleanup_retries_partial_deletion_after_windows_lock(tmp_path, monkeypatch):
+    session = tmp_path / "stage-owned"
+    session.mkdir()
+    u.atomic_json(session / "owner.json", {"app_id": u.APP_ID})
+    (session / "helper.exe").write_bytes(b"fixture")
+    original = u.shutil.rmtree
+    attempts = []
+    def temporarily_locked(path):
+        attempts.append(path)
+        if len(attempts) == 1:
+            (path / "owner.json").unlink()
+            raise PermissionError("Windows helper handle still closing")
+        return original(path)
+    monkeypatch.setattr(u.shutil, "rmtree", temporarily_locked)
+    u.cleanup_session(session, tmp_path)
+    assert len(attempts) == 2 and not session.exists()

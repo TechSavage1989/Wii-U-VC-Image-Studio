@@ -1,5 +1,10 @@
 # Wii U VC Image Builder v5.05 WebUI
 
+Historical baseline only. Filenames, build instructions and release claims below
+describe v5.05, not the current Studio package. Use the
+[current README](../../../README.md) and [handoff](../../../DEVELOPMENT_HANDOFF.md)
+for continued development and current downloads.
+
 Wii U VC Image Builder creates Wii U Virtual Console artwork from ROM captures, imported title-screen screenshots, and optional community artwork. Version 5 presents the existing Python processing engine through a local HTML, CSS, and JavaScript workspace in a native Windows window. ROMs and media remain on the user's computer.
 
 The Windows interface uses Microsoft Edge WebView2, which is included with current Windows 10 and Windows 11 installations. The provided setup and build scripts install the pinned pywebview Python package automatically.

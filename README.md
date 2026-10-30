@@ -22,10 +22,10 @@ This independent utility is not affiliated with Nintendo.
 
 ## Download
 
-The first Studio Windows build is being validated; no build has been published yet.
-Use the [releases index](https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases)
-for published builds and any clearly labeled prereleases. Source build instructions
-are below. Do not treat an Actions artifact as an approved stable release.
+Download the Windows x64 Portable ZIP from the
+[releases index](https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases).
+Prereleases, when present, are clearly labeled there. Only published release
+assets are approved downloads; an Actions artifact is not a published release.
 
 The Windows x64 Portable ZIP contains one folder and the stable
 Wii_U_VC_Image_Studio.exe filename. The Source ZIP is for development, not a
@@ -45,7 +45,7 @@ download against the release manifest, not publisher identity.
 
 ## Getting started
 
-1. Open the releases index and choose the Windows x64 Portable ZIP when available.
+1. Open the releases index and choose the Windows x64 Portable ZIP.
 2. Extract its entire folder to a writable location. Do not run inside the ZIP.
 3. Launch Wii_U_VC_Image_Studio.exe. Keep that name for a stable shortcut target.
 4. Choose an Export folder. Configure emulators only if you want automatic capture.
@@ -80,7 +80,7 @@ Studio checks the stable release feed at startup, every five minutes while onlin
 and on focus return after at least two minutes. Checks run in the background and
 use conditional requests, cached results, cooldowns and failure backoff.
 The Updates button starts a manual check. Failed/offline checks report a failure,
-not "up to date". Before the first stable release, the feed may be unavailable.
+not "up to date". Cached successful results do not erase a visible offline error.
 
 An available update shows installed/latest versions and short notes. Download is
 explicit. Install and restart is a separate action, blocked during active work.

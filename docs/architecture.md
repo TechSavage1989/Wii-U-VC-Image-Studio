@@ -4,7 +4,7 @@ Version 5 keeps all game processing in Python and replaces the primary Tk interf
 
 ## Runtime
 
-- `app.py` and `app.pyw` launch `vc_extractor.webui.run`.
+- `app.py` dispatches the update-helper command before importing the GUI; normal launches use `vc_extractor.webui.run`. `app.pyw` calls the same entrypoint.
 - pywebview opens the bundled `vc_extractor/webui_assets/index.html` in a native Windows window.
 - The frontend calls the narrow `WebUIApi` bridge for file dialogs, ROM management, metadata, capture, artwork rendering, repository search, previews, and boot sounds.
 - Native window and parent-controller references use private fields. pywebview recursively inspects public bridge attributes, so native objects must never be stored as public API state.
@@ -19,11 +19,11 @@ Version 5 keeps all game processing in Python and replaces the primary Tk interf
 
 ## Development run
 
-On Windows, run `Setup_and_Run.bat`. It creates a local virtual environment, installs the pinned requirements, and launches the WebUI without a console window. After setup, `Run.bat` starts it directly.
+On Windows, run `Setup_and_Run.bat`. It creates a local virtual environment, installs requirements, and launches the WebUI without a console window. After setup, `Run.bat` starts it directly. Existing shortcuts are not automatically rewritten.
 
 ## Portable build
 
-Run `Build_Windows_EXE.bat` for one local executable, or run the Sharing Kit's `Build_Portable_Release.bat` to create the complete portable folder and ZIP. Both scripts bundle the HTML, CSS, JavaScript, templates, icon assets, original generic sounds, pywebview runtime, and miniaudio decoder.
+Run `Build_Windows_EXE.bat`, which calls `scripts/build_windows.py`. It builds the stable `Wii_U_VC_Image_Studio.exe` and produces a portable ZIP, source ZIP, update manifest and SHA-256 list under `artifacts/`. The executable bundles HTML, CSS, JavaScript, templates, authentic icon assets, two original generic sounds, pywebview and miniaudio. The old Sharing Kit's `Build_Portable_Release.bat` is superseded by this single entrypoint.
 
 ## Main source files
 
@@ -32,7 +32,14 @@ Run `Build_Windows_EXE.bat` for one local executable, or run the Sharing Kit's `
 - `vc_extractor/webui_assets/index.html`: main workspace structure.
 - `vc_extractor/webui_assets/style.css`: responsive desktop styling.
 - `vc_extractor/webui_assets/app.js`: rendering and interaction layer.
+- `vc_extractor/webui_assets/updates.js`: window-bound check timers and explicit update banner actions.
+- `vc_extractor/updater.py`: bounded HTTPS checks, validation, staging, helper, health acknowledgement and rollback.
 - `vc_extractor/webui_assets/preview_window.*`: detached image preview.
 - `vc_extractor/webui_assets/activity_window.*`: detached live activity stream.
 
 The prior `vc_extractor/gui.py` module remains in the source snapshot as a compatibility reference for the established processing workflows, but it is not the application entry point.
+
+Update checks start before bootstrap diagnostics. The helper retains one rollback
+EXE per installation, waits for native-window plus renderer health, and successful
+cleanup waits for both one-file helper processes. See [updates](updates.md) for
+the feed, settings contract, integrity checks and remaining limitations.

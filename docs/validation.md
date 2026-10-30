@@ -1,10 +1,19 @@
 # Validation
 
-Local validation: 194 tests pass. JavaScript syntax, CSS parsing, root allowlist
-and README headings, navigation, local links and icon path pass. The actual README
-was rendered and visually inspected. Hosted Windows source startup, bridge health,
-viewport fit and a build from a fresh source archive without Git have passed.
-Packaged cleanup/rollback and final browser timer results remain pending.
+194 tests pass locally, in a fresh no-Git source archive, and on hosted Windows.
+JavaScript syntax, CSS parsing, root allowlist and README headings, navigation,
+local links and icon path pass. The actual README was rendered and visually
+inspected. Hosted Windows source startup, bridge health, viewport fit and a build
+from a fresh source archive without Git pass. Packaged cross-drive install,
+visible health, cleanup after helper exit, settings preservation, custom filename,
+one backup and failed-health rollback pass. Real browser focus return and the
+production-length two/five-minute intervals pass.
+
+Prepublication evidence: [Actions run 41003479695](https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/actions/runs/41003479695),
+source 20d51eebfa33b564f3a99ba2a268104a283f9daa. The release pipeline reruns these
+gates for its exact ref, then uses the updater to verify the actual public HTTPS
+feed, ZIP download, digests and staging. This download check does not install.
+Windows CI uses Windows Server 2025 x64. Manual Windows 10/11 testing was not done.
 
 Native negative control: run 41002656006 demonstrated a cleanup failure while the
 one-file helper bootloader still held its EXE. Cleanup now waits for both helper
@@ -28,5 +37,6 @@ blocks configuration storage for both launches, so it verifies restored bytes,
 not a usable rollback window under that deliberately broken environment.
 
 No publisher signing, full emulator capture across every console, manual Windows
-desktop interaction, or historical published Studio-to-Studio upgrade is claimed
-without explicit evidence. The first Studio release has no earlier Studio release.
+desktop interaction, or historical published Studio-to-Studio upgrade is claimed.
+The first Studio release has no earlier Studio release. Local Markdown rendering
+was inspected; the hosted GitHub page was not pixel-rendered for inspection.

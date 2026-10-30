@@ -24,7 +24,9 @@ replaces the current filename atomically, retains one previous executable and
 launches the new app with a one-time health token. The new native window must be
 shown and its JavaScript bridge/rendering ready before it acknowledges health.
 Missing health causes rollback. PyInstaller child processes get a fresh unpacking
-environment. Successful staging cleanup waits for the helper process to exit.
+environment. Successful staging cleanup waits for both helper and one-file
+bootloader processes to exit. Transient Windows file locks are retried within
+the same owned session.
 
 ## Manual migration and recovery
 

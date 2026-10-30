@@ -1533,7 +1533,7 @@ def test_v445_windows_drop_list_preserves_paths_with_spaces():
     app.tk = FakeTk()
     paths = app._split_drop_paths("drop-data")
 
-    assert [str(path) for path in paths] == ["C:/Games/One Game.nds", "D:/ROM Library"]
+    assert [path.as_posix() for path in paths] == ["C:/Games/One Game.nds", "D:/ROM Library"]
 
 
 def test_v446_repository_artwork_uses_exact_code_and_prefers_uwuvci(tmp_path: Path, monkeypatch):

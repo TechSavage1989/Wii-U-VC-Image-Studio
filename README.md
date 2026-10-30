@@ -22,10 +22,11 @@ This independent utility is not affiliated with Nintendo.
 
 ## Download
 
-Download the Windows x64 Portable ZIP from the
-[releases index](https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases).
-Prereleases, when present, are clearly labeled there. Only published release
-assets are approved downloads; an Actions artifact is not a published release.
+Get the Windows x64 Portable ZIP from the
+[latest stable release](https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases/latest).
+The [releases index](https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases)
+also lists previous releases and clearly labeled prereleases. Only published
+release assets are approved downloads; an Actions artifact is not a release.
 
 The Windows x64 Portable ZIP contains one folder and the stable
 Wii_U_VC_Image_Studio.exe filename. The Source ZIP is for development, not a
@@ -45,7 +46,7 @@ download against the release manifest, not publisher identity.
 
 ## Getting started
 
-1. Open the releases index and choose the Windows x64 Portable ZIP.
+1. Open the latest stable release and choose the Windows x64 Portable ZIP.
 2. Extract its entire folder to a writable location. Do not run inside the ZIP.
 3. Launch Wii_U_VC_Image_Studio.exe. Keep that name for a stable shortcut target.
 4. Choose an Export folder. Configure emulators only if you want automatic capture.

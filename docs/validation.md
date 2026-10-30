@@ -1,5 +1,11 @@
 # Validation
 
+Stable v5.06.0 is published from ac498fb0569900c5c7bd71a668addbbd94365e90.
+[Release run 41004430697](https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/actions/runs/41004430697)
+passed all three jobs, including actual public feed retrieval, portable download,
+SHA-256, archive identity and staging. The tag resolves to that exact commit.
+Four hosted assets and their digests were verified against the publication logs.
+
 194 tests pass locally, in a fresh no-Git source archive, and on hosted Windows.
 JavaScript syntax, CSS parsing, root allowlist and README headings, navigation,
 local links and icon path pass. The actual README was rendered and visually
@@ -19,6 +25,9 @@ Native negative control: run 41002656006 demonstrated a cleanup failure while th
 one-file helper bootloader still held its EXE. Cleanup now waits for both helper
 processes and retries transient Windows locks within the same owned session.
 An inherited path test also required native-separator-independent assertions.
+A local browser negative control removed the offline-render guard and reproduced
+a stale success message while offline. The released guard retained the offline
+error through a cached-success repaint; the browser regression also checks this.
 
 The unit suite preserves the v5.05 regressions and adds update URL, manifest,
 single-flight, ETag, cooldown, backoff, offline, ZIP, PE and cleanup checks.

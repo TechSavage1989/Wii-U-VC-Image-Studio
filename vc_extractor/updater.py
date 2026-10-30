@@ -218,7 +218,9 @@ class UpdateManager:
     def request_check(self, reason="manual"):
         with self._lock:
             now = self.clock()
-            cooldown = 30 if reason == "manual" else 120 if reason == "focus" else 300
+            # The window owns the five-minute interval. A focus check between
+            # ticks must not suppress the next tick for another five minutes.
+            cooldown = 120 if reason == "focus" else 30
             if self._inflight or now < self._blocked_until or (self._last and now - self._last < cooldown):
                 return False
             if self._state["status"] in ("downloaded", "installing"):

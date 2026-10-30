@@ -40,3 +40,8 @@ Use unique versions/tags. Publish only after tests and Windows CI pass. Report
 native Windows and old-to-new update checks that were not performed. Do not call
 untested native behavior verified. Documentation-only work does not bump versions.
 Keep README user-first and the current handoff concise; archive history in docs.
+
+Normal main-branch CI does not publish. A version-matched release/VERSION branch
+can run the same gates and publish vVERSION once, using the workflow's scoped
+GitHub token. Creating that branch is a publication action and requires approved
+release scope. Documentation-only main pushes skip binary builds and publication.

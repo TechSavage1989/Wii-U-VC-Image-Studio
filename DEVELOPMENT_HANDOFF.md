@@ -22,11 +22,11 @@ Updater data will live in %LOCALAPPDATA%/Wii_U_VC_Image_Studio/updates.
 
 ## Validation and publication
 
-Local validation: 190 tests passed, followed by 47 targeted tests including two
-additional native-health/busy-install guards (192 total now collected). JS syntax,
-CSS parse and root layout pass. Real Chromium production-length timers are running.
-Windows native startup and packaged helper/health/rollback tests are defined in CI,
-not yet verified. First release has no prior hosted Studio version to upgrade from.
+Local validation: 194 tests passed. JS syntax, CSS parse, root layout and README
+heading/navigation/local-link checks pass. The README was rendered and inspected
+with its authentic icon. Hosted Windows source startup and clean-source packaging
+have passed. Packaged cleanup/rollback and production-length browser timer checks
+remain in progress. First release has no prior hosted Studio version to upgrade from.
 
 ## Commands and source map
 
@@ -36,6 +36,11 @@ python -m pytest -q; python scripts/check_root.py; python scripts/browser_smoke.
 python scripts/build_windows.py, then python scripts/windows_update_smoke.py.
 python scripts/package_source.py produces a single-folder source ZIP without Git.
 CI extracts that source and builds it on Windows, and tests it on Linux.
+python scripts/check_docs.py verifies README structure and local links. Optional
+--render requires the Markdown package and writes a local review HTML file.
+The browser timing test uses Chromium without Playwright's forced-focus emulation.
+It waits real intervals and switches actual tab visibility, without fake clocks.
+The local sandbox blocks raw Chromium sockets; hosted CI runs that check instead.
 
 The natural Python package remains vc_extractor/ rather than forcing a src/ move.
 Original resources remain assets/. The WebUI stays colocated in webui_assets/.
@@ -50,7 +55,8 @@ scripts/root_allowlist.json is enforced for tracked files and extracted archives
 Stable filename: Wii_U_VC_Image_Studio.exe. Preserve renamed running EXEs in-place.
 Feed: https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases/latest/download/update-manifest.json.
 Repository/feed are public, no token embedded. Publish unique vVERSION tags only
-after main CI. Tag CI verifies version/digests and refuses existing release names.
+after main CI. Creating release/VERSION is also an explicit publication trigger.
+Release CI verifies ref/version/digests and refuses existing release names.
 No application-wide license chosen. Builds are unsigned. Keep upstream notices.
 v5.05 requires manual migration and explicit shortcut repointing. Restart closes
 the unsaved ROM list; settings and exports persist. Failed staging is retained.

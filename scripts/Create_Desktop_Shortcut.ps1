@@ -12,6 +12,13 @@ $Desktop = [Environment]::GetFolderPath("Desktop")
 $ShortcutPath = Join-Path $Desktop "Wii U VC Image Studio.lnk"
 $Shell = New-Object -ComObject WScript.Shell
 $Shortcut = $Shell.CreateShortcut($ShortcutPath)
+if (Test-Path $ShortcutPath) {
+    if ($Shortcut.TargetPath -eq $PythonW -and $Shortcut.Arguments -eq ('"' + $App + '"')) {
+        Write-Host "The existing Studio shortcut already points to this source installation."
+        exit 0
+    }
+    throw "An existing Studio shortcut points elsewhere. Keep or rename it before creating this shortcut; it has not been changed."
+}
 $Shortcut.TargetPath = $PythonW
 $Shortcut.Arguments = '"' + $App + '"'
 $Shortcut.WorkingDirectory = $Root

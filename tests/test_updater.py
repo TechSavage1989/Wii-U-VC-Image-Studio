@@ -210,3 +210,18 @@ def test_cleanup_retries_partial_deletion_after_windows_lock(tmp_path, monkeypat
     monkeypatch.setattr(u.shutil, "rmtree", temporarily_locked)
     u.cleanup_session(session, tmp_path)
     assert len(attempts) == 2 and not session.exists()
+
+
+def test_intervening_focus_does_not_skip_next_five_minute_tick(tmp_path):
+    now = [1000]
+    manager = u.UpdateManager("5.06.0", tmp_path,
+                              lambda *a: Response(json.dumps(manifest()).encode()),
+                              clock=lambda: now[0])
+    assert manager.request_check("startup")
+    settle(manager)
+    now[0] += 125
+    assert manager.request_check("focus")
+    settle(manager)
+    now[0] += 175
+    assert manager.request_check("interval")
+    settle(manager)

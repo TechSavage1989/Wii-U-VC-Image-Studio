@@ -51,6 +51,11 @@ class StudioUpdates {
 
   render(state, busy = false) {
     if (!state) return;
+    // A normal state poll must not overwrite an offline error with the last
+    // successful check. Verified, already-downloaded updates can install offline.
+    if (this.host.navigator.onLine === false && ["idle", "checking", "current", "available"].includes(state.status)) {
+      state = {...state, status: "error", message: "Offline. Updates could not be checked."};
+    }
     const key = JSON.stringify([state, busy, this.manualVisible]);
     if (key === this.lastKey) return;
     this.lastKey = key;

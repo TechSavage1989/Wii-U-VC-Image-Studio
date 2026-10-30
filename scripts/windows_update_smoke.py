@@ -94,6 +94,14 @@ def scenario(base, target_base, fail_health=False):
                           "custom_filename":True, "settings_preserved":True, "one_backup":True,
                           "cross_volume":target.drive.casefold() != session.drive.casefold()}))
     finally:
+        # A rollback launch can outlive its helper before the polling loop sees
+        # it. Discover only this fixture's exact, uniquely named executable.
+        for process in psutil.process_iter(["exe"]):
+            try:
+                if process.info["exe"] and os.path.normcase(process.info["exe"]) == os.path.normcase(str(target)):
+                    observed[process.pid] = process
+            except psutil.Error:
+                pass
         for process in list(observed.values()):
             try:
                 for child in process.children(recursive=True):

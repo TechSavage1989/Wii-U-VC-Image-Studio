@@ -21,15 +21,17 @@ def main():
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=not bool(os.environ.get("DISPLAY")), args=["--disable-background-timer-throttling"])
         context = browser.new_context(viewport={"width": 1440, "height": 940})
+        context.set_offline(False)
         context.add_init_script("""
             window.checkEvents = [];
+            window.testState = STATE;
             window.pywebview = {api: {
-                bootstrap: async () => ({ok:true, state: STATE}),
-                get_state: async () => STATE,
+                bootstrap: async () => ({ok:true, state: testState}),
+                get_state: async () => testState,
                 report_ui_ready: async () => ({ok:true, healthy:true}),
                 check_updates: async reason => {
                     window.checkEvents.push({reason, time:Date.now()});
-                    return {ok:true, update:STATE.updates};
+                    return {ok:true, update:testState.updates};
                 }
             }};
         """.replace("STATE", "(" + json.dumps(state) + ")"))
@@ -45,13 +47,18 @@ def main():
             page.wait_for_timeout(100)
             assert page.evaluate("document.documentElement.scrollHeight <= innerHeight && document.documentElement.scrollWidth <= innerWidth")
             assert page.locator(".workspace-grid").bounding_box()["height"] > 120
-        page.evaluate("studioUpdates.render({status:'available',installed:'5.06.0',latest:'5.07.0',message:'Update available',notes:['One','Two','Three']})")
+        page.evaluate("testState.updates={status:'available',installed:'5.06.0',latest:'5.07.0',message:'Update available',notes:['One','Two','Three']}; studioUpdates.render(testState.updates)")
         assert page.get_by_role("button", name="Download", exact=True).is_visible()
         assert page.locator("#updateBanner summary").inner_text() == "Read more"
-        page.evaluate("studioUpdates.render({status:'current',installed:'5.06.0',latest:'5.06.0',message:'Current',notes:[]}); studioUpdates.manualVisible=true; studioUpdates.render({status:'current',installed:'5.06.0',latest:'5.06.0',message:'Current',notes:[]})")
+        page.evaluate("testState.updates={status:'current',installed:'5.06.0',latest:'5.06.0',message:'Current',notes:[]}; studioUpdates.manualVisible=true; studioUpdates.render(testState.updates)")
         assert page.locator("#updateBanner strong").inner_text().count("5.06.0") == 1
         context.set_offline(True)
         page.get_by_role("button", name="Updates", exact=True).click()
+        assert "Offline" in page.locator("#updateBanner").inner_text()
+        # Negative control: a cached successful result must not erase the error.
+        page.evaluate("studioUpdates.render({status:'current',installed:'5.06.0',latest:'5.06.0',message:'Current'})")
+        assert "Offline" in page.locator("#updateBanner").inner_text()
+        page.wait_for_timeout(1000)
         assert "Offline" in page.locator("#updateBanner").inner_text()
         context.set_offline(False)
         assert not errors, errors

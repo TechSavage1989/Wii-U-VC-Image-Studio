@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self' http://127.0.0.1:* ws:;">
+  <title>Activity</title>
+  <link rel="stylesheet" href="window.css">
+</head>
+<body class="activity-window-body">
+  <header class="window-header">
+    <div>
+      <span class="window-eyebrow">Session activity</span>
+      <h1 id="activityTitle">Wii U VC Image Studio</h1>
+    </div>
+    <div class="activity-window-actions">
+      <span id="activityStatus" class="window-chip">Ready</span>
+      <button id="clearActivityButton" type="button">Clear</button>
+      <button id="reattachActivityButton" type="button">Reattach</button>
+    </div>
+  </header>
+  <pre id="detachedActivityLog" class="detached-activity-log">Connecting...</pre>
+  <script src="activity_window.js"></script>
+</body>
+</html>

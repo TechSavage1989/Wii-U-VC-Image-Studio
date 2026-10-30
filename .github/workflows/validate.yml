@@ -1,0 +1,80 @@
+name: Validate and build
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - run: python scripts/check_root.py
+      - run: python -m pytest -q
+      - run: python -m playwright install --with-deps chromium
+      - run: python scripts/browser_smoke.py --timers
+      - run: python scripts/package_source.py
+      - name: Validate extracted source without Git
+        run: |
+          python -m zipfile -e artifacts/Wii_U_VC_Image_Studio_v*_Source.zip /tmp/studio-source
+          cd /tmp/studio-source/Wii_U_VC_Image_Studio_Source
+          python scripts/check_root.py
+          python -m pytest -q
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: x64
+      - run: python -m pip install -r requirements.txt -r requirements-dev.txt
+      - run: python -m pytest -q
+      - run: python scripts/windows_native_smoke.py
+        timeout-minutes: 3
+      - run: python scripts/package_source.py
+      - name: Extract and build without Git metadata
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem artifacts/*_Source.zip | Select-Object -First 1
+          Expand-Archive $zip.FullName "$env:RUNNER_TEMP/studio-source"
+          Set-Location "$env:RUNNER_TEMP/studio-source/Wii_U_VC_Image_Studio_Source"
+          python scripts/check_root.py
+          python scripts/build_windows.py
+          Copy-Item artifacts/* "$env:GITHUB_WORKSPACE/artifacts/" -Force
+      - run: python scripts/windows_update_smoke.py
+        timeout-minutes: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-portable
+          path: artifacts/*
+          if-no-files-found: error
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [tests, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-portable
+          path: artifacts
+      - name: Verify tag, assets and publish once
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python -c "import json,os; m=json.load(open('artifacts/update-manifest.json')); assert os.environ['GITHUB_REF_NAME']=='v'+m['version']"
+          cd artifacts
+          sha256sum -c SHA256SUMS.txt
+          cd ..
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then echo 'Release already exists; refusing overwrite'; exit 1; fi
+          gh release create "$GITHUB_REF_NAME" artifacts/* --verify-tag --title "Wii U VC Image Studio $GITHUB_REF_NAME" --notes-file "docs/releases/$GITHUB_REF_NAME.md"

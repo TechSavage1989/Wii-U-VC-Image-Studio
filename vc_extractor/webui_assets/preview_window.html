@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' http://127.0.0.1:* ws:;">
+  <title>Image Preview</title>
+  <link rel="stylesheet" href="window.css">
+</head>
+<body class="preview-window-body">
+  <header class="window-header">
+    <div>
+      <span id="previewLabel" class="window-eyebrow">Image Preview</span>
+      <h1 id="previewGame">Loading...</h1>
+    </div>
+    <div class="activity-window-actions">
+      <span id="previewSize" class="window-chip"></span>
+      <button id="closePreviewButton" type="button">Close</button>
+    </div>
+  </header>
+  <main id="detachedPreviewStage" class="detached-preview-stage">
+    <div id="previewMessage" class="window-message">Loading preview...</div>
+    <img id="detachedPreviewImage" class="hidden" alt="">
+  </main>
+  <footer class="window-footer">Fit to window. The preview updates automatically when the selected artwork is rebuilt.</footer>
+  <script src="preview_window.js"></script>
+</body>
+</html>

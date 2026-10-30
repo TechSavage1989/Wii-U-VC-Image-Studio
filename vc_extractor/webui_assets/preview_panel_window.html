@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data:; img-src 'self' data:; style-src 'self'; script-src 'self'; connect-src 'self' http://127.0.0.1:* ws:;">
+  <title>Selected Preview</title>
+  <link rel="stylesheet" href="window.css">
+</head>
+<body class="preview-panel-window-body">
+  <header class="window-header">
+    <div>
+      <span class="window-eyebrow">Selected preview</span>
+      <h1 id="previewPanelGame">Select one game</h1>
+    </div>
+    <div class="activity-window-actions">
+      <button id="adjustFramingButton" type="button">Adjust Crop and Zoom</button>
+      <button id="reattachPreviewButton" type="button">Reattach Preview</button>
+    </div>
+  </header>
+  <main id="detachedPreviewGrid" class="detached-preview-grid">
+    <button class="detached-preview-tile" data-preview="title" type="button">
+      <span class="detached-preview-title">Title Screen</span>
+      <span class="detached-preview-image-stage">
+        <img class="hidden" alt="Title Screen preview">
+        <span class="window-message">Not available</span>
+      </span>
+      <span class="detached-preview-caption">Click to enlarge</span>
+    </button>
+    <button class="detached-preview-tile" data-preview="icon" type="button">
+      <span class="detached-preview-title">Icon Image <small>128 x 128</small></span>
+      <span class="detached-preview-image-stage icon-stage">
+        <img class="hidden" alt="Icon Image preview">
+        <span class="window-message">Not available</span>
+      </span>
+      <span class="detached-preview-caption">Click to enlarge</span>
+    </button>
+    <button class="detached-preview-tile" data-preview="tv" type="button">
+      <span class="detached-preview-title">TV Image <small>1280 x 720</small></span>
+      <span class="detached-preview-image-stage">
+        <img class="hidden" alt="TV Image preview">
+        <span class="window-message">Not available</span>
+      </span>
+      <span class="detached-preview-caption">Click to enlarge</span>
+    </button>
+    <button class="detached-preview-tile" data-preview="gamepad" type="button">
+      <span class="detached-preview-title">Gamepad Image <small>854 x 480</small></span>
+      <span class="detached-preview-image-stage">
+        <img class="hidden" alt="Gamepad Image preview">
+        <span class="window-message">Not available</span>
+      </span>
+      <span class="detached-preview-caption">Click to enlarge</span>
+    </button>
+  </main>
+  <footer class="window-footer">The four previews update with the selected game. Resize this window to resize every preview.</footer>
+  <script src="preview_panel_window.js"></script>
+</body>
+</html>

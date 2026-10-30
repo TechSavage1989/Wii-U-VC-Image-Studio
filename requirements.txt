@@ -1,0 +1,4 @@
+Pillow>=10.4,<13
+numpy>=2.0,<3
+miniaudio>=1.61,<2
+pywebview==6.2.1

@@ -1,0 +1,5 @@
+[
+  ".gitignore", "AGENTS.md", "DEVELOPMENT_HANDOFF.md", "README.md",
+  "THIRD_PARTY_NOTICES.txt", "app.py", "app.pyw", "requirements.txt",
+  "requirements-dev.txt", "Build_Windows_EXE.bat", "Run.bat", "Setup_and_Run.bat"
+]

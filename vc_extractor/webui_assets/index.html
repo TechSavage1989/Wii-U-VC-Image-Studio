@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; img-src 'self' data: blob:; media-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self' ws: http://127.0.0.1:*;">
+  <title>Wii U VC Image Studio</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img src="app-icon.png" alt="" class="brand-icon">
+        <div>
+          <div class="brand-title">Wii U VC Image Studio</div>
+          <div class="brand-subtitle">WebUI workspace <span id="versionLabel"></span></div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span id="operationChip" class="status-chip ready"><span class="status-dot"></span><span>Ready</span></span>
+        <button class="button quiet" data-action="open-settings">Settings</button>
+        <button class="button quiet" id="checkUpdatesButton">Updates</button>
+        <button class="button quiet" data-action="open-help">Help</button>
+      </div>
+    </header>
+
+    <section id="updateBanner" class="update-banner hidden" aria-live="polite"></section>
+    <main class="main-content">
+      <section class="path-strip card">
+        <div class="path-field">
+          <span class="eyebrow">RetroArch</span>
+          <span id="retroPath" class="path-value">Not configured</span>
+          <button class="icon-button" title="Choose RetroArch.exe" data-action="choose-retro">Browse</button>
+        </div>
+        <div class="path-field">
+          <span class="eyebrow">Dolphin fallback</span>
+          <span id="dolphinPath" class="path-value">Not configured</span>
+          <button class="icon-button" title="Choose Dolphin.exe" data-action="choose-dolphin">Browse</button>
+        </div>
+        <div class="path-field wide">
+          <span class="eyebrow">Export folder</span>
+          <span id="outputPath" class="path-value">Not configured</span>
+          <button class="icon-button" title="Choose export folder" data-action="choose-output">Browse</button>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="Main actions">
+        <div class="toolbar-group">
+          <button class="button primary" data-action="add-roms">Add ROMs</button>
+          <button class="button" data-action="add-folder">Add Folder</button>
+          <button class="button" data-action="import-screenshot" data-requires="single">Import Screenshot</button>
+        </div>
+        <div class="toolbar-group">
+          <button class="button" data-action="fetch-metadata">Fetch Metadata</button>
+          <button class="button" data-action="search-artwork" data-requires="single">Search Artwork</button>
+          <button class="button accent" data-action="build-images">Build Images</button>
+        </div>
+      </section>
+
+      <section id="dropZone" class="rom-section card">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">Project games</div>
+            <h1>ROM list</h1>
+          </div>
+          <div class="row-actions">
+            <button id="toggleSelectedButton" class="button small" data-action="toggle-selected" disabled>Check Selected</button>
+            <button class="button small" data-action="check-all">Check All</button>
+            <button class="button small" data-action="clear-checks">Clear Checks</button>
+            <button id="removeCheckedButton" class="button small danger" data-action="remove-checked" disabled>Remove Checked</button>
+          </div>
+        </div>
+        <div class="drop-hint" id="dropHint">Drop supported ROM files or folders here</div>
+        <div class="table-wrap">
+          <table class="rom-table">
+            <thead>
+              <tr>
+                <th class="check-column">Capture</th>
+                <th class="remove-column"><span class="sr-only">Remove</span></th>
+                <th>File</th>
+                <th>Source</th>
+                <th>Game</th>
+                <th>Console</th>
+                <th>Year</th>
+                <th>Players</th>
+                <th>Code</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="romTableBody"></tbody>
+          </table>
+          <div id="emptyState" class="empty-state">
+            <div class="empty-mark">VC</div>
+            <h2>Add your game files</h2>
+            <p>Select ROMs, scan a folder, or drag files here. Metadata and enabled artwork sources are checked automatically.</p>
+            <div class="empty-actions">
+              <button class="button primary" data-action="add-roms">Add ROMs</button>
+              <button class="button" data-action="add-folder">Add Folder</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="workspace-grid">
+        <aside class="controls-panel card">
+          <div class="panel-tabs" role="tablist">
+            <button class="panel-tab active" data-tab="game" role="tab">Game</button>
+            <button class="panel-tab" data-tab="capture" role="tab">Capture</button>
+            <button class="panel-tab" data-tab="sound" role="tab">Boot Sound</button>
+          </div>
+
+          <div class="tab-page active" data-tab-page="game">
+            <div id="gameControlsEmpty" class="panel-empty">Select one game to edit its artwork and details.</div>
+            <div id="gameControls" class="control-stack hidden">
+              <div class="selected-heading">
+                <div>
+                  <span class="eyebrow">Selected game</span>
+                  <h2 id="selectedGameName"></h2>
+                </div>
+                <span id="selectedSystemBadge" class="system-badge"></span>
+              </div>
+              <div class="button-grid two">
+                <button class="button" data-action="edit-details">Edit Game Details</button>
+                <button class="button" data-action="open-metadata">Open Metadata</button>
+              </div>
+              <label class="field-label" for="iconFrameSelect">Icon Image frame</label>
+              <select id="iconFrameSelect" class="select-control"></select>
+              <label class="field-label" for="sourceAreaSelect">Source image area</label>
+              <select id="sourceAreaSelect" class="select-control">
+                <option value="auto">Automatic</option>
+                <option value="full">Full Image</option>
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+              </select>
+              <div id="tvSourceGroup" class="hidden">
+                <label class="field-label" for="tvSourceSelect">Wii TV/Gamepad source</label>
+                <select id="tvSourceSelect" class="select-control"></select>
+                <button class="button full" data-action="import-banner">Import Custom TV/Gamepad Image</button>
+              </div>
+              <div class="button-grid two">
+                <button class="button" data-action="open-framing">Adjust Crop & Zoom</button>
+                <button class="button" data-action="open-placement">Template Placement</button>
+              </div>
+              <div class="button-grid two">
+                <button class="button" data-action="review-artwork">Review Artwork Matches <span id="artworkCountBadge" class="count-badge">0</span></button>
+                <button class="button" data-action="review-captures">Review Captures <span id="candidateCountBadge" class="count-badge">0</span></button>
+              </div>
+              <button class="button full" data-action="clear-artwork">Use Generated Artwork</button>
+              <button class="button full" data-action="open-output">Open Output Folder</button>
+            </div>
+          </div>
+
+          <div class="tab-page" data-tab-page="capture">
+            <p class="panel-copy">Automatic capture requires RetroArch and may use Dolphin for GameCube, Wii, and WiiWare. Imported screenshots do not require an emulator.</p>
+            <div class="form-grid two-columns">
+              <label>Warm-up seconds<input id="warmupInput" type="number" min="0" step="0.25"></label>
+              <label>Scan duration<input id="durationInput" type="number" min="2" step="1"></label>
+              <label>Sample interval<input id="intervalInput" type="number" min="0.2" step="0.05"></label>
+              <label>Candidates to keep<input id="candidateInput" type="number" min="1" max="20" step="1"></label>
+            </div>
+            <label class="field-label" for="captureCropSelect">Capture screen crop</label>
+            <select id="captureCropSelect" class="select-control">
+              <option value="auto">Automatic</option>
+              <option value="full">Full Image</option>
+              <option value="top">Top</option>
+              <option value="bottom">Bottom</option>
+              <option value="left">Left</option>
+              <option value="right">Right</option>
+            </select>
+            <fieldset class="fieldset">
+              <legend>Create output images</legend>
+              <label class="check-row"><input id="makeIconCheck" type="checkbox">Icon Image</label>
+              <label class="check-row"><input id="makeTvCheck" type="checkbox">TV Image</label>
+              <label class="check-row"><input id="makeGamepadCheck" type="checkbox">Gamepad Image</label>
+            </fieldset>
+            <fieldset class="fieldset">
+              <legend>Metadata overlay</legend>
+              <label class="check-row"><input id="overlayCheck" type="checkbox">Enable metadata overlay</label>
+              <div class="nested-checks">
+                <label class="check-row"><input id="titleOverlayCheck" type="checkbox">Game title</label>
+                <label class="check-row"><input id="releaseOverlayCheck" type="checkbox">Release date</label>
+                <label class="check-row"><input id="playersOverlayCheck" type="checkbox">Player count</label>
+              </div>
+            </fieldset>
+            <div class="capture-buttons">
+              <button id="startCaptureButton" class="button primary" data-action="start-capture">Capture ROM Screens</button>
+              <button id="stopCaptureButton" class="button danger" data-action="stop-capture" disabled>Stop and Use Captures</button>
+            </div>
+          </div>
+
+          <div class="tab-page" data-tab-page="sound">
+            <div id="soundControlsEmpty" class="panel-empty">Select one game to configure its boot sound.</div>
+            <div id="soundControls" class="control-stack hidden">
+              <label class="field-label" for="bootSoundSelect">Available sound choices</label>
+              <select id="bootSoundSelect" class="select-control"></select>
+              <div id="bootSoundSummary" class="info-box"></div>
+              <div class="button-grid two">
+                <button class="button" data-action="browse-sound">Browse for Game</button>
+                <button class="button" data-action="set-console-sound">Set Console Sound</button>
+                <button class="button" data-action="search-sounds">Search Sources</button>
+                <button class="button" data-action="more-sounds">More Sounds</button>
+              </div>
+              <div class="button-grid two">
+                <button id="playSoundButton" class="button accent" data-action="play-sound">Play Boot Sound</button>
+                <button class="button" data-action="stop-sound">Stop</button>
+              </div>
+              <button class="button danger full" data-action="clear-sound">Clear Boot Sound</button>
+            </div>
+          </div>
+        </aside>
+
+        <div id="workspaceSplitter" class="workspace-splitter" role="separator" aria-label="Resize controls and preview panels" aria-orientation="vertical" tabindex="0"></div>
+
+        <section class="preview-panel card">
+          <div class="section-heading compact">
+            <div>
+              <div class="eyebrow">Selected output</div>
+              <h2>Image previews</h2>
+            </div>
+            <div class="row-actions">
+              <button id="detachPreviewButton" class="button small" data-action="detach-preview">Detach Preview</button>
+              <button class="button small" data-action="build-images">Refresh Outputs</button>
+            </div>
+          </div>
+          <div id="previewEmpty" class="preview-empty">Select a game to view its generated images.</div>
+          <div id="previewDetachedState" class="preview-detached-state hidden">
+            <strong>Selected Preview is detached.</strong>
+            <span>Use the separate preview window, or choose Reattach Preview above.</span>
+          </div>
+          <div id="previewGrid" class="preview-grid hidden">
+            <button class="preview-tile" data-preview="title">
+              <span class="preview-title">Title Screen</span>
+              <span class="preview-stage"><img alt="Title Screen preview"><span class="preview-placeholder">Not available</span></span>
+              <span class="preview-caption">Click to enlarge</span>
+            </button>
+            <button class="preview-tile icon-preview" data-preview="icon">
+              <span class="preview-title">Icon Image <small>128 x 128</small></span>
+              <span class="preview-stage"><img alt="Icon Image preview"><span class="preview-placeholder">Not available</span></span>
+              <span class="preview-caption">Click to enlarge</span>
+            </button>
+            <button class="preview-tile wide-preview" data-preview="tv">
+              <span class="preview-title">TV Image <small>1280 x 720</small></span>
+              <span class="preview-stage"><img alt="TV Image preview"><span class="preview-placeholder">Not available</span></span>
+              <span class="preview-caption">Click to enlarge</span>
+            </button>
+            <button class="preview-tile wide-preview" data-preview="gamepad">
+              <span class="preview-title">Gamepad Image <small>854 x 480</small></span>
+              <span class="preview-stage"><img alt="Gamepad Image preview"><span class="preview-placeholder">Not available</span></span>
+              <span class="preview-caption">Click to enlarge</span>
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <section class="operation-bar card">
+        <div class="operation-copy">
+          <span id="operationText">Ready</span>
+          <span id="operationFraction"></span>
+        </div>
+        <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+      </section>
+
+      <section id="activityPanel" class="activity-panel card">
+        <div class="section-heading compact">
+          <div>
+            <div class="eyebrow">Session</div>
+            <h2>Activity</h2>
+          </div>
+          <div class="row-actions">
+            <button class="button small" data-action="clear-activity">Clear</button>
+            <button class="button small" data-action="detach-activity">Detach</button>
+            <button class="button small" data-action="toggle-activity">Hide</button>
+          </div>
+        </div>
+        <pre id="activityLog" class="activity-log" aria-live="polite"></pre>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalHost"></div>
+  <div id="toastHost" class="toast-host" aria-live="assertive"></div>
+  <audio id="soundPlayer" preload="none"></audio>
+  <script src="updates.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

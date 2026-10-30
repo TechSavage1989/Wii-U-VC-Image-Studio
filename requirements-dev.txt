@@ -1,0 +1,5 @@
+pytest==8.4.2
+pyinstaller==6.16.0
+playwright==1.55.0
+tinycss2==1.4.0
+psutil==7.1.0

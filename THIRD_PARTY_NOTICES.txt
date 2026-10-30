@@ -1,0 +1,66 @@
+CREDITS AND THIRD-PARTY NOTICES
+===============================
+
+Wii U VC Image Builder is an independent community utility.
+
+The project uses or interoperates with community projects and public metadata sources, including Libretro/RetroArch databases and GameTDB where applicable.
+
+Optional artwork and boot-sound search connects to these community repositories:
+
+UWUVCI Community Images
+https://github.com/UWUVCI-PRIME/UWUVCI-IMAGES
+
+Cucholix WiiVC BIS
+https://github.com/cucholix/wiivc-bis
+
+GameCube Inject Artwork
+https://github.com/reddragon105/gamecube-inject-artwork
+
+Libretro Thumbnails
+https://github.com/libretro-thumbnails/libretro-thumbnails
+
+MyInstants is available only as a console-specific external search opened in the user's browser:
+https://www.myinstants.com/
+
+Repository artwork and online repository audio are downloaded on demand. The selected source repository and matching evidence are written to metadata.txt. MyInstants-hosted audio is not scraped or bundled. Rights and licensing can vary by source, image and sound. Users must review the applicable source terms and file rights before downloading or redistributing content.
+
+This release bundles only two original generic startup chimes created for the application. No MyInstants-derived console recordings are included in the source, Sharing Kit or generated executable. Per-game sounds selected with Browse are converted and stored privately under the user's active configuration directory. Set Console stores a private reusable console-wide choice in the same configuration structure.
+
+Cucholix WiiVC BIS supplies optional generic console bootSound.btsnd files for supported systems where available. GameCube Inject Artwork supplies optional GameCube bootSound WAV files. The application converts selected WAV, MP3 and BTSND sources to bootSound.wav and does not grant redistribution rights for that audio.
+
+Some Virtual Console template resources used by the project originated from or were modeled after resources from the open-source UWUVCI project. The UWUVCI repository is published under GPL-3.0. If you redistribute a build that includes material from that project, retain appropriate attribution and the applicable license notices and make corresponding source available where required.
+
+Libretro Database is published under CC BY-SA 4.0. Metadata is retrieved by the application rather than redistributed as a bundled database.
+
+RetroArch and Dolphin are separate projects and are not bundled with this release.
+
+pywebview 6.2.1 provides the native desktop WebUI window, JavaScript-to-Python bridge, file dialogs and full-path drag-and-drop integration. It is distributed under the BSD 3-Clause License:
+
+Copyright (c) 2014-2017, Roman Sirokov
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Python miniaudio and the miniaudio C library provide MP3 and encoded-WAV decoding and are distributed under the MIT License:
+
+Python bindings Copyright (c) 2019 Irmen de Jong
+miniaudio Copyright 2019 David Reid
+stb_vorbis Copyright (c) 2017 Sean Barrett
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Nintendo and the names of Nintendo systems are trademarks of Nintendo. This project is not affiliated with or endorsed by Nintendo.
+
+Users are responsible for using legally obtained game dumps and for complying with applicable laws and software licenses.

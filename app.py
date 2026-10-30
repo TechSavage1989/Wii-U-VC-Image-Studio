@@ -8,7 +8,8 @@ def main():
             apply_update(sys.argv[2])
         except Exception as exc:
             atomic_json(storage_root() / "helper-error.json", {"error": str(exc)})
-            raise
+            # Avoid a windowed-PyInstaller error dialog holding the helper open.
+            raise SystemExit(1)
     else:
         from vc_extractor.webui import run
         run()

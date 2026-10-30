@@ -1,6 +1,7 @@
 """Real Chromium UI test. --timers waits for production 2/5-minute intervals."""
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 import time
@@ -17,7 +18,7 @@ def main():
     args = parser.parse_args()
     state = WebUIApi().get_state()
     with sync_playwright() as p:
-        browser = p.chromium.launch(args=["--disable-background-timer-throttling"])
+        browser = p.chromium.launch(headless=not bool(os.environ.get("DISPLAY")), args=["--disable-background-timer-throttling"])
         context = browser.new_context(viewport={"width": 1440, "height": 940})
         context.add_init_script("""
             window.checkEvents = [];
@@ -62,7 +63,8 @@ def main():
             page.wait_for_timeout(500)
             page.bring_to_front()
             page.wait_for_timeout(500)
-            assert page.evaluate("checkEvents.some(x=>x.reason==='focus')")
+            events = page.evaluate("checkEvents")
+            assert any(e["reason"] == "focus" and e["time"] - events[0]["time"] >= 120000 for e in events), events
             while time.monotonic() - started < 305:
                 page.wait_for_timeout(1000)
             events = page.evaluate("checkEvents")

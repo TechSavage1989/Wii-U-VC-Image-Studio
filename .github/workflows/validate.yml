@@ -1,7 +1,7 @@
 name: Validate and build
 on:
   push:
-    branches: [main]
+    branches: [main, 'release/*']
     tags: ['v*']
   pull_request:
   workflow_dispatch:
@@ -19,7 +19,7 @@ jobs:
       - run: python scripts/check_root.py
       - run: python -m pytest -q
       - run: python -m playwright install --with-deps chromium
-      - run: python scripts/browser_smoke.py --timers
+      - run: xvfb-run -a python scripts/browser_smoke.py --timers
       - run: python scripts/package_source.py
       - name: Validate extracted source without Git
         run: |
@@ -57,7 +57,7 @@ jobs:
           path: artifacts/*
           if-no-files-found: error
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || startsWith(github.ref, 'refs/heads/release/')
     needs: [tests, windows]
     runs-on: ubuntu-latest
     permissions:
@@ -72,9 +72,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          python -c "import json,os; m=json.load(open('artifacts/update-manifest.json')); assert os.environ['GITHUB_REF_NAME']=='v'+m['version']"
+          VERSION=$(python -c "import json; print(json.load(open('artifacts/update-manifest.json'))['version'])")
+          TAG="v$VERSION"
+          if [ "$GITHUB_REF_NAME" != "$TAG" ] && [ "$GITHUB_REF_NAME" != "release/$VERSION" ]; then echo 'Ref does not match package version'; exit 1; fi
           cd artifacts
           sha256sum -c SHA256SUMS.txt
           cd ..
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then echo 'Release already exists; refusing overwrite'; exit 1; fi
-          gh release create "$GITHUB_REF_NAME" artifacts/* --verify-tag --title "Wii U VC Image Studio $GITHUB_REF_NAME" --notes-file "docs/releases/$GITHUB_REF_NAME.md"
+          if gh release view "$TAG" >/dev/null 2>&1; then echo 'Release already exists; refusing overwrite'; exit 1; fi
+          gh release create "$TAG" artifacts/* --target "$GITHUB_SHA" --title "Wii U VC Image Studio $TAG" --notes-file "docs/releases/$TAG.md"

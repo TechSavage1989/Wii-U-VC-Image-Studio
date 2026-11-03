@@ -1,7 +1,21 @@
-<p align="center"><img src="assets/vc_title_extractor.png" width="112" alt="Wii U VC Image Studio application icon"></p>
+<p align="center">
+  <img src="assets/vc_title_extractor.png" width="112" alt="Wii U VC Image Studio icon">
+</p>
+
 <h1 align="center">Wii U VC Image Studio</h1>
 <p align="center">Prepare Wii U Virtual Console artwork and optional boot sounds from your own games.</p>
-<p align="center"><a href="#download">Download</a> | <a href="#getting-started">Get started</a> | <a href="#features">Features</a> | <a href="#updates-and-settings">Updates</a> | <a href="#development">Development</a></p>
+
+<p align="center">
+  <a href="https://github.com/TechSavage1989/Wii-U-VC-Image-Studio/releases/latest">Download</a> ·
+  <a href="#getting-started">Get started</a> ·
+  <a href="#features">Features</a> ·
+  <a href="#updates-and-settings">Updates</a> ·
+  <a href="#development">Development</a>
+</p>
+
+<p align="center">
+  <img src="docs/images/hero.png" alt="Wii U VC Image Studio main window" width="900">
+</p>
 
 ## Features
 
@@ -19,6 +33,22 @@ ROM metadata, screenshots, artwork review and boot sounds into one local window.
 
 No ROMs, emulator cores, downloaded community artwork or MyInstants audio are bundled.
 This independent utility is not affiliated with Nintendo.
+
+### Screenshots
+
+Screens show fictional placeholder games and generated title screens.
+
+**Imported title screen and the Icon, TV and Gamepad images Studio built from it**
+
+<img src="docs/images/generated-outputs.png" alt="Imported title screen and the Icon, TV and Gamepad images Studio built from it" width="900">
+
+**Adjust Crop & Zoom with live previews**
+
+<img src="docs/images/crop-and-zoom.png" alt="Adjust Crop & Zoom with live previews" width="900">
+
+**Boot Sound tab**
+
+<img src="docs/images/boot-sound.png" alt="Boot Sound tab" width="900">
 
 ## Download
 

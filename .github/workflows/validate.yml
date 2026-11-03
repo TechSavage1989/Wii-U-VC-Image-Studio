@@ -3,7 +3,7 @@ on:
   push:
     branches: [main, 'release/*']
     tags: ['v*']
-    paths-ignore: ['docs/**', 'README.md', 'AGENTS.md', 'DEVELOPMENT_HANDOFF.md']
+    paths-ignore: ['docs/**', 'README.md', 'AGENTS.md', 'CLAUDE.md', 'DEVELOPMENT_HANDOFF.md']
   pull_request:
   workflow_dispatch:
 permissions:

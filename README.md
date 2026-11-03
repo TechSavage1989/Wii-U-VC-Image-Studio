@@ -36,19 +36,56 @@ This independent utility is not affiliated with Nintendo.
 
 ### Screenshots
 
-Screens show fictional placeholder games and generated title screens.
+Screens show fictional placeholder games, generated title screens and a generated chime.
 
-**Imported title screen and the Icon, TV and Gamepad images Studio built from it**
+#### Games and metadata
 
-<img src="docs/images/generated-outputs.png" alt="Imported title screen and the Icon, TV and Gamepad images Studio built from it" width="900">
+**Edit Game Details: name, year, players, product code, region, publisher and developer**
 
-**Adjust Crop & Zoom with live previews**
+<img src="docs/images/edit-details.png" alt="Edit Game Details: name, year, players, product code, region, publisher and developer" width="900">
 
-<img src="docs/images/crop-and-zoom.png" alt="Adjust Crop & Zoom with live previews" width="900">
+#### Screenshots and capture
 
-**Boot Sound tab**
+<table>
+  <tr>
+    <td width="50%"><b>Capture tab: warm-up, scan duration, sampling and candidate settings</b><br><img src="docs/images/capture-tab.png" alt="Capture tab: warm-up, scan duration, sampling and candidate settings" width="440"></td>
+    <td width="50%"><b>Review captured or imported frames and pick the one to export</b><br><img src="docs/images/review-captures.png" alt="Review captured or imported frames and pick the one to export" width="440"></td>
+  </tr>
+</table>
 
-<img src="docs/images/boot-sound.png" alt="Boot Sound tab" width="900">
+#### Artwork and framing
+
+<table>
+  <tr>
+    <td width="50%"><b>Imported title screen and the Icon, TV and Gamepad images built from it</b><br><img src="docs/images/generated-outputs.png" alt="Imported title screen and the Icon, TV and Gamepad images built from it" width="440"></td>
+    <td width="50%"><b>Adjust Crop & Zoom with live previews</b><br><img src="docs/images/crop-and-zoom.png" alt="Adjust Crop & Zoom with live previews" width="440"></td>
+  </tr>
+  <tr>
+    <td width="50%"><b>Template Placement: the artwork rectangle on the 1280 x 720 TV template</b><br><img src="docs/images/template-placement.png" alt="Template Placement: the artwork rectangle on the 1280 x 720 TV template" width="440"></td>
+    <td width="50%"><b>A preview enlarged into its own window</b><br><img src="docs/images/enlarged-preview.png" alt="A preview enlarged into its own window" width="440"></td>
+  </tr>
+</table>
+
+#### Detached previews
+
+**The whole preview panel detached, here showing a Dark Frame icon**
+
+<img src="docs/images/detached-preview-panel.png" alt="The whole preview panel detached, here showing a Dark Frame icon" width="900">
+
+#### Boot sounds
+
+**A WAV imported as a stored per-game boot sound**
+
+<img src="docs/images/boot-sound.png" alt="A WAV imported as a stored per-game boot sound" width="900">
+
+#### Settings and help
+
+<table>
+  <tr>
+    <td width="50%"><b>Settings: export folder, emulators, artwork sources and activity logging</b><br><img src="docs/images/settings.png" alt="Settings: export folder, emulators, artwork sources and activity logging" width="440"></td>
+    <td width="50%"><b>Documentation Center</b><br><img src="docs/images/help.png" alt="Documentation Center" width="440"></td>
+  </tr>
+</table>
 
 ## Download
 
